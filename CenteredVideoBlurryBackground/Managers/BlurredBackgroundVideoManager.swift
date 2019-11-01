@@ -406,21 +406,14 @@ extension BlurredBackgroundVideoManager {
 	}
 
 	fileprivate func handleOtherCases(assetSize: CGSize, defaultTransform: CGAffineTransform, properties: Properties) -> CGAffineTransform {
-		let rotateTransform = CGAffineTransform(rotationAngle: CGFloat(Double.pi/2.0))
+        	let rotateTransform = CGAffineTransform(rotationAngle: CGFloat(Double.pi/2.0))
+        	let scaleTransform = CGAffineTransform(scaleX: properties.scale.width, y: properties.scale.height)
 
-		let scaleTransform = CGAffineTransform(scaleX: properties.scale.width, y: properties.scale.height)
+        	let ytranslation: CGFloat = ( self.size.height - ( assetSize.height * properties.scale.height ) ) / 2
+        	let xtranslation: CGFloat = ( assetSize.width * properties.scale.width ) + ( self.size.width - ( assetSize.width * properties.scale.width ) ) / 2
+        	let translationTransform = CGAffineTransform(translationX: xtranslation, y: ytranslation)
 
-		var ytranslation: CGFloat = 0
-		var xtranslation: CGFloat = assetSize.width
-		if properties.position.y == 0 {
-			xtranslation = assetSize.width - (assetSize.width - ((size.width/size.height) * assetSize.height))/2.0
-		}
-		else {
-			ytranslation = -(assetSize.height - ((size.height/size.width) * assetSize.width))/2.0
-		}
-		let translationTransform = CGAffineTransform(translationX: xtranslation, y: ytranslation)
-
-		let finalTransform = defaultTransform.concatenating(rotateTransform).concatenating(translationTransform).concatenating(scaleTransform)
-		return finalTransform
-	}
+        	let finalTransform = defaultTransform.concatenating(scaleTransform).concatenating(rotateTransform).concatenating(translationTransform)
+        	return finalTransform
+    	}
 }
